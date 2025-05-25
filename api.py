@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_httpauth import HTTPBasicAuth
+from datetime import datetime
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
@@ -19,8 +20,9 @@ def handle_post():
     data = request.get_json()
     if not data:
         return jsonify({"error": "No data received"}), 400
-    print("Received data:", data)
     client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    with open('log.txt','a') as file:
+        file.write(datetime.now().strftime("%Y.%m.%d_%H:%M:%S.%f")+str(data)+'\n')
     return jsonify({
         "response": "OK",
         "src-addr": client_ip
